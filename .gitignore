@@ -1,0 +1,4 @@
+*.bak
+*.bak.*
+measure/
+__pycache__/
