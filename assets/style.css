@@ -178,6 +178,42 @@ h2{font-weight:900;font-size:clamp(22px,3.6vw,33px);line-height:1.45;color:var(-
 .pt h4::before{content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--cyan)}
 .pt p{font-size:12.5px;color:var(--mute);line-height:1.8}
 
+/* services page extras */
+.svc-intro{padding-bottom:30px}
+.svc-intro h2{line-height:1.4}
+.svc-intro-p{color:var(--ink);opacity:.9;margin-top:18px;font-size:15px;line-height:1.95}
+.svc-two{padding:0 0 10px}
+.svc-two-in{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.svc-two-in{grid-template-columns:1fr}}
+.svc-nav{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;transition:.25s}
+.svc-nav:hover{border-color:var(--cyan);box-shadow:var(--shadow-sm);transform:translateY(-3px)}
+.svc-nav .sn-no{font:800 26px/1 var(--num);color:var(--cyan-d);flex-shrink:0}
+.svc-nav b{display:block;font-size:15px;color:var(--navy);font-weight:900;line-height:1.5}
+.svc-nav em{font-style:normal;font-size:12px;color:var(--mute)}
+.svc-sec{padding:64px 0}
+.svc-detail{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:700px){.svc-detail{grid-template-columns:1fr}}
+.sd-block{background:var(--tint);border:1px solid var(--line);border-radius:14px;padding:24px 24px}
+.sd-block h3{font-size:15px;font-weight:900;color:var(--navy);margin-bottom:12px;padding-left:14px;position:relative}
+.sd-block h3::before{content:"";position:absolute;left:0;top:5px;width:5px;height:16px;border-radius:3px;background:var(--cyan)}
+.sd-block>p{font-size:13.5px;color:var(--ink);opacity:.9;line-height:1.9}
+.sd-fee{grid-column:1/-1;background:#fff}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:12.5px;font-weight:700;color:var(--navy);background:#fff;border:1px solid var(--line);padding:7px 14px;border-radius:999px}
+.sd-block .tags-note{font-size:12px;color:var(--mute);margin-top:12px;line-height:1.8}
+.sup-list{margin:0;padding:0;list-style:none;counter-reset:sup}
+.sup-list li{position:relative;counter-increment:sup;padding:9px 0 9px 32px;font-size:13px;color:var(--ink);line-height:1.7;border-bottom:1px solid var(--line)}
+.sup-list li:last-child{border-bottom:none}
+.sup-list li::before{content:counter(sup);position:absolute;left:0;top:9px;width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;font:800 11px/20px var(--num);text-align:center}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+@media(max-width:860px){.flow{grid-template-columns:1fr;max-width:620px;margin:0 auto}}
+.flow-step{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 20px}
+.flow-step .fs-no{display:inline-block;font:800 20px/1 var(--num);color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));width:40px;height:40px;border-radius:50%;text-align:center;line-height:40px;margin-bottom:14px}
+.flow-step h4{font-size:14.5px;font-weight:900;color:var(--navy);margin-bottom:8px}
+.flow-step p{font-size:12px;color:var(--mute);line-height:1.8}
+@media(min-width:861px){.flow-step:not(:last-child)::after{content:"";position:absolute;top:46px;right:-10px;width:12px;height:12px;border-top:2px solid var(--cyan);border-right:2px solid var(--cyan);transform:rotate(45deg);z-index:1}}
+
 /* works full */
 .wk-list{display:flex;flex-direction:column;gap:20px;max-width:860px;margin:0 auto}
 .wk-full{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
@@ -286,7 +322,8 @@ h2{font-weight:900;font-size:clamp(22px,3.6vw,33px);line-height:1.45;color:var(-
 footer{background:#0e0a30;color:rgba(255,255,255,.7);padding:56px 20px 30px}
 .ft-in{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:40px}
 @media(max-width:720px){.ft-in{grid-template-columns:1fr;gap:26px}}
-.ft-brand img{height:40px;filter:brightness(0) invert(1);margin-bottom:16px}
+.ft-name{font-weight:900;font-size:19px;color:#fff;margin-bottom:15px;letter-spacing:.02em;line-height:1.3}
+.ft-name span{display:block;font:700 10.5px/1 var(--num);color:#9fe3fb;letter-spacing:.16em;margin-top:6px}
 .ft-addr{font-size:13px;line-height:1.9}
 .ft-lic{margin-top:12px;display:flex;flex-direction:column;gap:3px}
 .ft-lic span{font-size:11.5px;color:#9fe3fb}

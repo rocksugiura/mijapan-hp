@@ -85,6 +85,52 @@ WORKS = [
      [("2名", "採用人数"), ("1週間", "相談から入社まで"), ("26歳", "平均年齢")]),
 ]
 
+# ---- 事業ごとの追加情報（事業内容ページ用。img2=事業ページ専用の写真でトップと重複させない） ----
+SERVICE_EXTRA = {
+    "agency": {
+        "img2": "svc-agency.jpg",
+        "blocks": [
+            ("対応する在留資格",
+             "永住者／定住者／日本人の配偶者等／永住者の配偶者等など、就労に制限のない身分系の在留資格を持つ方が中心です。職種や勤務時間の法的な制限がないため、残業・夜勤・交替勤務・配置転換も日本人社員と同じ条件でお任せいただけます。"),
+        ],
+        "tags_title": "対応する業種・職種",
+        "tags": ["製造", "建設", "食品製造", "物流・倉庫", "外食", "介護", "農業", "宿泊", "ITエンジニア"],
+        "tags_note": "最先端の技術を持つITエンジニアも、独自の海外ルートからヘッドハント・ご紹介が可能です。",
+        "fee": ("料金について（完全成功報酬）",
+                "ご相談・人材のご提案・面接調整まで無料です。費用が発生するのはご入社が決まったときの1回のみ。採用者にお支払いする年収（基本給・諸手当・賞与・残業代等の1年分）の30%＋消費税を基準に、ご予算に応じてご相談を承ります。"),
+    },
+    "tokutei": {
+        "img2": "svc-tokutei.jpg",
+        "sup_title": "登録支援機関としての10の義務的支援",
+        "sup": [
+            "事前ガイダンス（雇用契約・活動内容・入国手続などの説明）",
+            "出入国する際の送迎",
+            "住居の確保・生活に必要な契約（銀行口座・携帯・ライフライン）の支援",
+            "生活オリエンテーション（交通・医療・防災など日本での生活ルール）",
+            "公的手続などへの同行",
+            "日本語学習の機会の提供",
+            "相談・苦情への対応（母国語での対応）",
+            "日本人との交流促進",
+            "転職支援（受入れ側の都合で契約解除となる場合）",
+            "定期的な面談・行政機関への届出",
+        ],
+        "tags_title": "特定技能の対応分野",
+        "tags": ["介護", "ビルクリーニング", "素形材・産業機械・電気電子", "建設", "飲食料品製造", "外食", "農業", "漁業", "宿泊", "自動車整備", "造船・舶用", "航空"],
+        "tags_note": "上記をはじめ、特定技能の対象分野に幅広く対応します。対象分野かどうかの確認からご相談いただけます。",
+        "fee": ("料金について",
+                "支援内容に応じた明朗なお見積りをご提示します。委託する支援の範囲（全部委託／一部委託）に合わせて、月額の支援委託費をご相談のうえ決定します。"),
+    },
+}
+
+# ---- ご相談から入社・定着までの流れ ----
+FLOW = [
+    ("お問い合わせ", "電話・フォーム・LINEのいずれかからご連絡ください。業種・必要人数・勤務条件などを簡単にお知らせいただくだけで構いません。"),
+    ("ヒアリング・ご提案", "業務内容や条件を詳しくお伺いし、どの在留資格・制度が最適かをご提案します。この段階では費用は一切かかりません。"),
+    ("人材のご紹介・面接", "経歴・在留資格・日本語レベルを添えて候補者をご提案。対面・オンラインどちらの面接にも当社が同席し、通訳や条件のすり合わせをサポートします。"),
+    ("ご入社・雇用手続き", "雇用契約や各種手続きをサポートします。特定技能の場合は、登録支援機関として支援計画の作成・届出まで代行します。"),
+    ("入社後の定着支援", "入社後も本人・企業さま双方と連絡を継続。母国語を交えた定期面談で、小さな不安が退職に発展する前に解消します。"),
+]
+
 # ---- コラム記事（slug, カテゴリ, 日付, タイトル, 概要, 画像, 本文HTML） ----
 ARTICLES = [
     (
@@ -123,7 +169,7 @@ ARTICLES = [
         "ukeire-flow", "採用ノウハウ", "2026.09.05",
         "はじめての外国人採用｜ご相談から入社・定着までの流れ",
         "外国人採用が初めての企業さま向けに、当社にご相談いただいてから入社・定着支援までの流れを、ステップごとに分かりやすくご説明します。",
-        "work-factory.jpg",
+        "flow-warehouse.jpg",
         """
 <p>「外国人を採用したいが、何から始めればいいか分からない」というご相談を多くいただきます。本記事では、当社にお問い合わせいただいてから入社・定着までの流れを、5つのステップでご説明します。</p>
 <h2>ステップ1〜2：お問い合わせとヒアリング</h2>
@@ -190,7 +236,7 @@ def footer(depth: int = 0) -> str:
     return f"""<footer>
   <div class="ft-in">
     <div class="ft-brand">
-      <img src="{pre}assets/logo.png" alt="{SITE}">
+      <p class="ft-name">{SITE}<span>{SITE_EN}</span></p>
       <p class="ft-addr">{ADDR}<br>TEL {TEL} ／ FAX 0276-56-9734</p>
       <p class="ft-lic"><span>{LICENSE_INTRO}</span><span>{LICENSE_SUPPORT}</span></p>
     </div>
@@ -383,30 +429,74 @@ def build_top() -> None:
 
 
 def build_services() -> None:
-    blocks = ""
-    for i, (slug, name, lic, img, lead, pts) in enumerate(SERVICES):
-        rev = "svc-rev" if i % 2 else ""
-        points = "".join(f'<div class="pt reveal"><h4>{h}</h4><p>{d}</p></div>' for h, d in pts)
-        blocks += f"""<section class="svc-sec {rev}" id="{slug}">
-  <div class="wrap svc-full">
-    <div class="svc-full-img reveal" style="background-image:url('assets/{img}')"></div>
-    <div class="svc-full-body">
-      <span class="eyebrow">{"Service 0"+str(i+1)}</span>
-      <span class="svc-lic">{lic}</span>
-      <h2>{name}</h2>
-      <p class="lead">{lead}</p>
-      <div class="pt-grid">{points}</div>
-    </div>
+    intro = f"""<section class="sec svc-intro">
+  <div class="wrap-narrow center reveal">
+    <span class="eyebrow">Our Mission</span>
+    <h2>優秀な外国人材を、<br>日本の職場の&ldquo;潤滑油&rdquo;に。</h2>
+    <p class="svc-intro-p">人手が足りず事業を止めてしまう——そんな事態をなくすことが私たちの使命です。独自の海外ルートと国内ネットワークから、今すぐ働ける即戦力をご紹介し、受け入れ後の定着まで一貫して支援します。代表自身が外国人として来日・就労し、ビザや就業を経験してきたからこそ、働く人と雇う企業の双方に寄り添えます。</p>
+  </div>
+</section>
+<section class="svc-two">
+  <div class="wrap svc-two-in">
+    <a class="svc-nav reveal" href="#agency"><span class="sn-no">01</span><div><b>有料職業紹介事業</b><em>就労制限のない即戦力をご紹介</em></div></a>
+    <a class="svc-nav reveal" href="#tokutei"><span class="sn-no">02</span><div><b>特定技能外国人支援・登録支援事業</b><em>受入れから定着まで一気通貫で支援</em></div></a>
   </div>
 </section>"""
+
+    blocks = ""
+    for i, (slug, name, lic, img, lead, pts) in enumerate(SERVICES):
+        ex = SERVICE_EXTRA[slug]
+        rev = "svc-rev" if i % 2 else ""
+        points = "".join(f'<div class="pt reveal"><h4>{h}</h4><p>{d}</p></div>' for h, d in pts)
+        tags = "".join(f'<span class="tag">{t}</span>' for t in ex["tags"])
+        detail = ""
+        for bh, bd in ex.get("blocks", []):
+            detail += f'<div class="sd-block reveal"><h3>{bh}</h3><p>{bd}</p></div>'
+        if "sup" in ex:
+            items = "".join(f"<li>{s}</li>" for s in ex["sup"])
+            detail += f'<div class="sd-block reveal"><h3>{ex["sup_title"]}</h3><ol class="sup-list">{items}</ol></div>'
+        detail += (f'<div class="sd-block reveal"><h3>{ex["tags_title"]}</h3>'
+                   f'<div class="tags">{tags}</div>'
+                   f'<p class="tags-note">{ex["tags_note"]}</p></div>')
+        feeh, feed = ex["fee"]
+        detail += f'<div class="sd-block sd-fee reveal"><h3>{feeh}</h3><p>{feed}</p></div>'
+        blocks += f"""<section class="svc-sec {rev}" id="{slug}">
+  <div class="wrap">
+    <div class="svc-full">
+      <div class="svc-full-img reveal" style="background-image:url('assets/{ex["img2"]}')"></div>
+      <div class="svc-full-body">
+        <span class="eyebrow">{"Service 0"+str(i+1)}</span>
+        <span class="svc-lic">{lic}</span>
+        <h2>{name}</h2>
+        <p class="lead">{lead}</p>
+        <div class="pt-grid">{points}</div>
+      </div>
+    </div>
+    <div class="svc-detail">{detail}</div>
+  </div>
+</section>"""
+
+    steps = "".join(
+        f'<div class="flow-step reveal"><span class="fs-no">{n:02d}</span><div class="fs-body"><h4>{t}</h4><p>{d}</p></div></div>'
+        for n, (t, d) in enumerate(FLOW, 1)
+    )
+    flow = f"""<section class="sec sec-tint">
+  <div class="wrap">
+    {sec_head("Flow", "ご相談から入社・定着までの流れ", "はじめての外国人採用でも、受け入れ体制づくりから入社後のフォローまで伴走しますのでご安心ください。")}
+    <div class="flow">{steps}</div>
+  </div>
+</section>"""
+
     body = f"""
 {page_hero("Business", "事業内容", "人材紹介と特定技能の受入れ支援。2つの事業で、企業さまの人手不足に応えます。", "work-construction.jpg", 0)}
 {crumbs([("事業内容", "")], 0)}
+{intro}
 {blocks}
+{flow}
 {cta_band(0)}
 """
     page("services.html", f"事業内容｜{SITE}",
-         "有料職業紹介事業（許可番号10-ユ-300568・全職種）と、登録支援機関（26登-013978）による特定技能外国人の受入れ支援。製造・建設・食品・物流など幅広い分野に対応します。",
+         "有料職業紹介事業（許可番号10-ユ-300568・全職種）と、登録支援機関（26登-013978）による特定技能外国人の受入れ支援。対応在留資格・業種・料金・支援内容・ご相談からの流れまで詳しくご紹介します。",
          body, "services.html", 0)
 
 
@@ -784,6 +874,42 @@ h2{font-weight:900;font-size:clamp(22px,3.6vw,33px);line-height:1.45;color:var(-
 .pt h4::before{content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--cyan)}
 .pt p{font-size:12.5px;color:var(--mute);line-height:1.8}
 
+/* services page extras */
+.svc-intro{padding-bottom:30px}
+.svc-intro h2{line-height:1.4}
+.svc-intro-p{color:var(--ink);opacity:.9;margin-top:18px;font-size:15px;line-height:1.95}
+.svc-two{padding:0 0 10px}
+.svc-two-in{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.svc-two-in{grid-template-columns:1fr}}
+.svc-nav{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;transition:.25s}
+.svc-nav:hover{border-color:var(--cyan);box-shadow:var(--shadow-sm);transform:translateY(-3px)}
+.svc-nav .sn-no{font:800 26px/1 var(--num);color:var(--cyan-d);flex-shrink:0}
+.svc-nav b{display:block;font-size:15px;color:var(--navy);font-weight:900;line-height:1.5}
+.svc-nav em{font-style:normal;font-size:12px;color:var(--mute)}
+.svc-sec{padding:64px 0}
+.svc-detail{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:700px){.svc-detail{grid-template-columns:1fr}}
+.sd-block{background:var(--tint);border:1px solid var(--line);border-radius:14px;padding:24px 24px}
+.sd-block h3{font-size:15px;font-weight:900;color:var(--navy);margin-bottom:12px;padding-left:14px;position:relative}
+.sd-block h3::before{content:"";position:absolute;left:0;top:5px;width:5px;height:16px;border-radius:3px;background:var(--cyan)}
+.sd-block>p{font-size:13.5px;color:var(--ink);opacity:.9;line-height:1.9}
+.sd-fee{grid-column:1/-1;background:#fff}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:12.5px;font-weight:700;color:var(--navy);background:#fff;border:1px solid var(--line);padding:7px 14px;border-radius:999px}
+.sd-block .tags-note{font-size:12px;color:var(--mute);margin-top:12px;line-height:1.8}
+.sup-list{margin:0;padding:0;list-style:none;counter-reset:sup}
+.sup-list li{position:relative;counter-increment:sup;padding:9px 0 9px 32px;font-size:13px;color:var(--ink);line-height:1.7;border-bottom:1px solid var(--line)}
+.sup-list li:last-child{border-bottom:none}
+.sup-list li::before{content:counter(sup);position:absolute;left:0;top:9px;width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;font:800 11px/20px var(--num);text-align:center}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+@media(max-width:860px){.flow{grid-template-columns:1fr;max-width:620px;margin:0 auto}}
+.flow-step{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 20px}
+.flow-step .fs-no{display:inline-block;font:800 20px/1 var(--num);color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));width:40px;height:40px;border-radius:50%;text-align:center;line-height:40px;margin-bottom:14px}
+.flow-step h4{font-size:14.5px;font-weight:900;color:var(--navy);margin-bottom:8px}
+.flow-step p{font-size:12px;color:var(--mute);line-height:1.8}
+@media(min-width:861px){.flow-step:not(:last-child)::after{content:"";position:absolute;top:46px;right:-10px;width:12px;height:12px;border-top:2px solid var(--cyan);border-right:2px solid var(--cyan);transform:rotate(45deg);z-index:1}}
+
 /* works full */
 .wk-list{display:flex;flex-direction:column;gap:20px;max-width:860px;margin:0 auto}
 .wk-full{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
@@ -892,7 +1018,8 @@ h2{font-weight:900;font-size:clamp(22px,3.6vw,33px);line-height:1.45;color:var(-
 footer{background:#0e0a30;color:rgba(255,255,255,.7);padding:56px 20px 30px}
 .ft-in{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:40px}
 @media(max-width:720px){.ft-in{grid-template-columns:1fr;gap:26px}}
-.ft-brand img{height:40px;filter:brightness(0) invert(1);margin-bottom:16px}
+.ft-name{font-weight:900;font-size:19px;color:#fff;margin-bottom:15px;letter-spacing:.02em;line-height:1.3}
+.ft-name span{display:block;font:700 10.5px/1 var(--num);color:#9fe3fb;letter-spacing:.16em;margin-top:6px}
 .ft-addr{font-size:13px;line-height:1.9}
 .ft-lic{margin-top:12px;display:flex;flex-direction:column;gap:3px}
 .ft-lic span{font-size:11.5px;color:#9fe3fb}
