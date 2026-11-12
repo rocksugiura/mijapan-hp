@@ -788,8 +788,8 @@ body.home #hd:not(.solid) .burger span{background:#fff}
 @keyframes kenburns{from{transform:scale(1.06)}to{transform:scale(1.14)}}
 .hero-ov{position:absolute;inset:0;z-index:1;background:linear-gradient(100deg,rgba(14,10,48,.9) 0%,rgba(18,13,64,.78) 38%,rgba(20,15,70,.42) 64%,rgba(20,15,70,.1) 100%)}
 .hero-inner{position:relative;z-index:2;padding-top:150px;padding-bottom:92px}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:11px;font:800 15px/1 var(--num);letter-spacing:.08em;color:#fff;background:rgba(61,199,244,.2);border:1.5px solid rgba(61,199,244,.62);backdrop-filter:blur(4px);padding:14px 26px;border-radius:999px;margin-bottom:30px;box-shadow:0 8px 28px -8px rgba(61,199,244,.55)}
-.hero-eyebrow i{font-style:normal;color:var(--cyan);font-size:18px;font-weight:900}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:14px;font:800 clamp(17px,2.4vw,28px)/1.2 var(--num);letter-spacing:.06em;color:#fff;background:rgba(61,199,244,.2);border:2px solid rgba(61,199,244,.64);backdrop-filter:blur(4px);padding:15px 32px;border-radius:999px;margin-bottom:34px;box-shadow:0 10px 34px -8px rgba(61,199,244,.6)}
+.hero-eyebrow i{font-style:normal;color:var(--cyan);font-size:1.15em;font-weight:900}
 .hero h1{font-weight:900;font-size:clamp(44px,7vw,88px);line-height:1.12;letter-spacing:.012em;color:#fff;margin-bottom:26px;text-shadow:0 2px 36px rgba(10,6,40,.46)}
 .hero h1 em{font-style:normal;color:var(--cyan);text-shadow:0 0 40px rgba(61,199,244,.55)}
 .hero-lead{font-size:clamp(16px,1.8vw,20px);color:#fff;font-weight:500;max-width:640px;margin-bottom:0;line-height:1.92;text-shadow:0 1px 18px rgba(10,6,40,.42)}
