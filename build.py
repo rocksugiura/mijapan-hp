@@ -3,6 +3,7 @@
 HTMLは直接編集しない。内容・構造の変更は必ずこのファイルへ。"""
 import os
 import pathlib
+import urllib.parse
 
 ROOT = pathlib.Path(__file__).parent
 # プレビュー公開(GitHub Pages等)では MIJAPAN_NOINDEX=1 で検索避け。本番(mi-japan.net)は未指定で付かない
@@ -17,6 +18,8 @@ FORM_ENDPOINT = "https://formsubmit.co/info@mi-japan.net"  # ※メール開設�
 LICENSE_INTRO = "有料職業紹介事業 許可番号 10-ユ-300568"
 LICENSE_SUPPORT = "登録支援機関 登録番号 26登-013978"
 ADDR = "〒374-0016　群馬県館林市松原1丁目9番地1　黒沢第2ビル301"
+MAP_SRC = "https://maps.google.com/maps?q=" + urllib.parse.quote("群馬県館林市松原1丁目9-1 黒沢第2ビル") + "&hl=ja&z=16&output=embed"
+COLUMN_PER_PAGE = 9  # コラム一覧は1ページ9件（3×3）、以降はページ送り
 
 # ---- ナビ（label, href） ----
 NAV = [
@@ -370,13 +373,6 @@ def build_top() -> None:
     <span class="hero-eyebrow reveal">人材紹介 <i>×</i> 特定技能 受入れ支援</span>
     <h1 class="reveal">人も、企業も、<br><em>元気にする</em>。</h1>
     <p class="hero-lead reveal">製造・建設・食品・物流の人材不足を、今すぐ働ける外国人材で解決。人材紹介から特定技能の受入れ支援まで、ワンストップでサポートします。</p>
-    <div class="hero-cta reveal">
-      <a class="btn-form" href="contact.html">無料で相談する</a>
-      <a class="btn-ghost hero-ghost" href="services.html">事業内容を見る</a>
-    </div>
-    <div class="hero-badges reveal">
-      <span>{LICENSE_INTRO}</span><span>{LICENSE_SUPPORT}</span>
-    </div>
   </div>
   <div class="hero-scroll" aria-hidden="true"><span></span></div>
 </section>
@@ -551,6 +547,12 @@ def build_company() -> None:
   {sec_head("Overview", "会社情報")}
   <table class="co-table reveal">{table}</table>
 </div></section>
+
+<section class="sec"><div class="wrap-narrow">
+  {sec_head("Access", "アクセス")}
+  <div class="co-map reveal"><iframe src="{MAP_SRC}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{SITE} 所在地マップ"></iframe></div>
+  <p class="co-map-addr">{ADDR}</p>
+</div></section>
 {cta_band(0)}
 """
     page("company.html", f"会社概要｜{SITE}",
@@ -558,25 +560,62 @@ def build_company() -> None:
          body, "company.html", 0)
 
 
+def _col_pager(cur: int, total: int) -> str:
+    """コラム一覧のページ送り（1ページ目は index.html、以降は N.html）。"""
+    if total <= 1:
+        return ""
+    href = lambda n: "index.html" if n == 1 else f"{n}.html"
+    # 表示する番号（多ページ時は 1 … cur-1 cur cur+1 … last）
+    if total <= 7:
+        nums = list(range(1, total + 1))
+    else:
+        keep = sorted({1, 2, cur - 1, cur, cur + 1, total - 1, total} & set(range(1, total + 1)))
+        nums, prev = [], 0
+        for n in keep:
+            if n - prev > 1:
+                nums.append(0)  # 0 = 省略記号
+            nums.append(n)
+            prev = n
+    items = []
+    if cur > 1:
+        items.append(f'<a class="pg pg-nav" href="{href(cur-1)}" aria-label="前のページ">‹</a>')
+    for n in nums:
+        if n == 0:
+            items.append('<span class="pg pg-dots">…</span>')
+        elif n == cur:
+            items.append(f'<span class="pg pg-on" aria-current="page">{n}</span>')
+        else:
+            items.append(f'<a class="pg" href="{href(n)}">{n}</a>')
+    if cur < total:
+        items.append(f'<a class="pg pg-nav" href="{href(cur+1)}" aria-label="次のページ">›</a>')
+    return f'<nav class="pager reveal" aria-label="コラムのページ送り">{"".join(items)}</nav>'
+
+
 def build_column() -> None:
-    # 一覧（column/index.html, depth=1）
-    cards = ""
-    for slug, cat, date, title, excerpt, img, _body in ARTICLES:
-        cards += f"""<a class="col-card reveal" href="{slug}.html">
+    # 一覧（1ページ9件・3×3。10件目以降はページ送り） column/index.html, column/2.html …
+    pages = [ARTICLES[i:i + COLUMN_PER_PAGE] for i in range(0, len(ARTICLES), COLUMN_PER_PAGE)] or [[]]
+    total = len(pages)
+    for pi, chunk in enumerate(pages, 1):
+        cards = ""
+        for slug, cat, date, title, excerpt, img, _body in chunk:
+            cards += f"""<a class="col-card reveal" href="{slug}.html">
   <div class="col-img" style="background-image:url('../assets/{img}')"><span class="col-cat">{cat}</span></div>
   <div class="col-body"><time>{date}</time><h3>{title}</h3><p>{excerpt}</p></div>
 </a>"""
-    body = f"""
+        body = f"""
 {page_hero("Column", "コラム", "外国人採用・特定技能・在留資格について、企業さまに役立つ情報を発信します。", "mv.jpg", 1)}
 {crumbs([("コラム", "")], 1)}
 <section class="sec"><div class="wrap">
   <div class="col-grid">{cards}</div>
+  {_col_pager(pi, total)}
 </div></section>
 {cta_band(1)}
 """
-    page("column/index.html", f"コラム｜{SITE}",
-         "外国人採用・特定技能・在留資格に関する企業さま向けコラム。採用ノウハウや制度解説を分かりやすくお届けします。",
-         body, "column/index.html", 1)
+        path = "column/index.html" if pi == 1 else f"column/{pi}.html"
+        suffix = "" if pi == 1 else f"（{pi}ページ目）"
+        page(path, f"コラム{suffix}｜{SITE}",
+             "外国人採用・特定技能・在留資格に関する企業さま向けコラム。採用ノウハウや制度解説を分かりやすくお届けします。",
+             body, "column/index.html", 1)
 
     # 各記事（depth=1）
     for idx, (slug, cat, date, title, excerpt, img, art_body) in enumerate(ARTICLES):
@@ -925,6 +964,11 @@ body.home #hd:not(.solid) .burger span{background:#fff}
 .co-table th,.co-table td{padding:16px 18px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
 .co-table th{background:var(--navy);color:#fff;font-weight:700;width:190px;white-space:nowrap}
 @media(max-width:560px){.co-table th,.co-table td{display:block;width:100%}.co-table th{width:100%}}
+/* access map */
+.co-map{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+.co-map iframe{display:block;width:100%;height:380px;border:0}
+.co-map-addr{text-align:center;font-size:13px;color:var(--mute);margin-top:14px}
+@media(max-width:600px){.co-map iframe{height:300px}}
 
 /* column list */
 .col-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
@@ -938,6 +982,13 @@ body.home #hd:not(.solid) .burger span{background:#fff}
 .col-body time{font:700 12px/1 var(--num);color:var(--mute)}
 .col-body h3{font-size:16px;font-weight:900;color:var(--navy);margin:8px 0 10px;line-height:1.5}
 .col-body p{font-size:13px;color:var(--mute);line-height:1.8}
+/* pager */
+.pager{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:48px;flex-wrap:wrap}
+.pg{min-width:42px;height:42px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;font:800 14px/1 var(--num);color:var(--navy);background:#fff;transition:.2s}
+a.pg:hover{border-color:var(--cyan);color:var(--cyan-d);transform:translateY(-2px)}
+.pg-on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.pg-nav{color:var(--cyan-d);font-size:18px}
+.pg-dots{border:none;background:none;min-width:24px;color:var(--mute)}
 
 /* article */
 .art-hero{position:relative;min-height:320px;display:flex;align-items:flex-end;background-size:cover;background-position:center;color:#fff}
